@@ -68,6 +68,7 @@ model User {
   phone        String?   @db.VarChar(20)
   isActive     Boolean   @default(true) @map("is_active")
   fcmToken     String?   @map("fcm_token")
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz()
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
@@ -88,8 +89,9 @@ model Product {
   pricingType PricingType @map("pricing_type")
   basePrice   Decimal     @map("base_price") @db.Decimal(10, 2)
   isAvailable Boolean     @default(true) @map("is_available")
-  imageUrl    String?     @map("image_url")
-  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz()
+  imageUrl     String?   @map("image_url")
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz()
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz()
 
   orderItems OrderItem[]
 
