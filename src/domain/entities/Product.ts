@@ -1,4 +1,4 @@
-export type PricingType = 'BY_WEIGHT' | 'BY_PIECE';
+export type PricingType = 'BY_WEIGHT_KG' | 'BY_WEIGHT_G' | 'BY_PIECE';
 
 export class Product {
   constructor(
@@ -7,7 +7,7 @@ export class Product {
     public description: string,
     public price: number,
     public pricingType: PricingType,
-    public category: string,
+    public category: string = '',
     public imageUrl: string | null = null,
     public isAvailable: boolean = true,
     public deletedAt: Date | null = null,

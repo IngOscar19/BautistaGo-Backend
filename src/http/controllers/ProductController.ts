@@ -9,8 +9,8 @@ const ProductSchema = z.object({
   name: z.string().min(2),
   description: z.string().min(5),
   price: z.number().positive(),
-  pricingType: z.enum(['BY_WEIGHT', 'BY_PIECE']),
-  category: z.string().min(2),
+  pricingType: z.enum(['BY_WEIGHT_KG', 'BY_WEIGHT_G', 'BY_PIECE']),
+  category: z.string().min(2).optional(),
   imageUrl: z.string().url().optional(),
 });
 

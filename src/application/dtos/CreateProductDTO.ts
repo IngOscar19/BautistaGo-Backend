@@ -5,6 +5,6 @@ export interface CreateProductDTO {
   description: string;
   price: number;
   pricingType: PricingType;
-  category: string;
+  category?: string;
   imageUrl?: string | null;
 }

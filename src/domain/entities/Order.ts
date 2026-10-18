@@ -1,6 +1,8 @@
 import type { IOrderStatusState } from '../states/OrderState';
 import { stateFromStatus } from '../states/OrderState';
 
+import type { PricingType } from './Product';
+
 export type OrderStatus = 
   | 'PENDING_KITCHEN'
   | 'IN_PREPARATION'
@@ -18,7 +20,12 @@ export class OrderItem {
     public readonly unitPrice: number,
     public readonly subtotal: number,
     public readonly notes?: string,
+    public readonly pricingTypeSnapshot: PricingType = 'BY_PIECE',
   ) {}
+
+  get unitPriceSnapshot(): number {
+    return this.unitPrice;
+  }
 }
 
 export class Order {
