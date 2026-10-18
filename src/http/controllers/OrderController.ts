@@ -4,7 +4,7 @@ import { OrderFacade } from '../../application/facades/OrderFacade';
 import { PrismaOrderRepository } from '../../infrastructure/db/PrismaOrderRepository';
 import { SocketBroadcaster } from '../../infrastructure/websockets/SocketBroadcaster';
 import { FcmService } from '../../infrastructure/notifications/FcmService';
-import { io } from '../../main';
+import { io } from '../../infrastructure/websockets/io';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import type { OrderStatus } from '../../domain/entities/Order';
 

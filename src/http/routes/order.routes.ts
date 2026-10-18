@@ -14,10 +14,10 @@ orderRoutes.get('/my-history', authenticateJwt, OrderController.getCustomerHisto
 orderRoutes.get('/:id', authenticateJwt, OrderController.getById);
 
 // Listar órdenes por estado (ej. cocina o repartidores)
-orderRoutes.get('/status/:status', authenticateJwt, requireRole('KITCHEN', 'DELIVERY', 'ADMIN'), OrderController.getByStatus);
+orderRoutes.get('/status/:status', authenticateJwt, requireRole('KITCHEN_OPERATOR', 'DELIVERY_DRIVER', 'ADMIN'), OrderController.getByStatus);
 
 // Avance de estado de comanda (Cocina -> Listo -> Reparto -> Entregado)
-orderRoutes.patch('/:id/status', authenticateJwt, requireRole('KITCHEN', 'DELIVERY', 'ADMIN'), OrderController.advanceStatus);
+orderRoutes.patch('/:id/status', authenticateJwt, requireRole('KITCHEN_OPERATOR', 'DELIVERY_DRIVER', 'ADMIN'), OrderController.advanceStatus);
 
 // Cancelación de comanda
-orderRoutes.post('/:id/cancel', authenticateJwt, requireRole('KITCHEN', 'ADMIN'), OrderController.cancel);
+orderRoutes.post('/:id/cancel', authenticateJwt, requireRole('KITCHEN_OPERATOR', 'ADMIN'), OrderController.cancel);

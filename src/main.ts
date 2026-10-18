@@ -1,10 +1,10 @@
 import 'dotenv/config';
 import http from 'http';
-import { Server } from 'socket.io';
 import admin from 'firebase-admin';
 import { app } from './app';
 import { TelemetryGateway } from './http/gateways/TelemetryGateway';
 import { prisma } from './infrastructure/db/prisma.client';
+import { io } from './infrastructure/websockets/io';
 
 if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY) {
   admin.initializeApp({
@@ -17,12 +17,7 @@ if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY) {
 }
 
 const httpServer = http.createServer(app);
-export const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.CORS_ORIGINS?.split(','),
-    methods: ['GET', 'POST'],
-  },
-});
+io.attach(httpServer);
 
 new TelemetryGateway(io);
 
