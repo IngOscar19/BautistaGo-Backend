@@ -8,6 +8,7 @@ import type {
 import type { Order, OrderStatus } from '../../domain/entities/Order';
 import { OrderFactory } from '../factories/OrderFactory';
 import type { CreateOrderDTO } from '../dtos/CreateOrderDTO';
+import { NotFoundError } from '../../shared/errors/AppError';
 
 export class OrderFacade {
   constructor(
@@ -40,7 +41,7 @@ export class OrderFacade {
 
   async advanceStatus(orderId: string, customerFcmToken?: string): Promise<Order> {
     const order = await this.orderRepo.findById(orderId);
-    if (!order) throw new Error(`Pedido ${orderId} no encontrado`);
+    if (!order) throw new NotFoundError(`Pedido ${orderId}`);
 
     order.advanceState();
     await this.orderRepo.updateStatus(orderId, order.status);
@@ -66,7 +67,7 @@ export class OrderFacade {
 
   async cancelOrder(orderId: string): Promise<Order> {
     const order = await this.orderRepo.findById(orderId);
-    if (!order) throw new Error(`Pedido ${orderId} no encontrado`);
+    if (!order) throw new NotFoundError(`Pedido ${orderId}`);
 
     order.cancel();
     await this.orderRepo.updateStatus(orderId, order.status);

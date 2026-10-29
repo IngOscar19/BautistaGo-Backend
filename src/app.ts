@@ -9,6 +9,7 @@ import { productRoutes } from './http/routes/product.routes';
 import { userRoutes } from './http/routes/user.routes';
 import { analyticsRoutes } from './http/routes/analytics.routes';
 import { globalErrorHandler } from './http/middlewares/errorHandler';
+import { requestLogger } from './http/middlewares/requestLogger';
 
 export const app = express();
 
@@ -29,6 +30,9 @@ app.use(rateLimit({
 // Parsers
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Logging de requests HTTP (winston)
+app.use(requestLogger);
 
 // Enrutador API REST
 app.use('/api/auth', authRoutes);

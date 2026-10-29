@@ -1,4 +1,5 @@
 import type { PricingType } from '../entities/Product';
+import { BadRequestError } from '../../shared/errors/AppError';
 
 export interface IPricingStrategy {
   calculateSubtotal(quantity: number, unitPrice: number): number;
@@ -12,7 +13,7 @@ export class ByWeightPricingStrategy implements IPricingStrategy {
    */
   calculateSubtotal(quantity: number, unitPrice: number): number {
     if (quantity <= 0 || unitPrice <= 0) {
-      throw new Error('La cantidad y el precio por kilo deben ser mayores a 0');
+      throw new BadRequestError('La cantidad y el precio por kilo deben ser mayores a 0');
     }
     return Number((quantity * unitPrice).toFixed(2));
   }
@@ -26,7 +27,7 @@ export class ByPiecePricingStrategy implements IPricingStrategy {
    */
   calculateSubtotal(quantity: number, unitPrice: number): number {
     if (quantity <= 0 || unitPrice <= 0) {
-      throw new Error('La cantidad y el precio por pieza deben ser mayores a 0');
+      throw new BadRequestError('La cantidad y el precio por pieza deben ser mayores a 0');
     }
     return Number((quantity * unitPrice).toFixed(2));
   }

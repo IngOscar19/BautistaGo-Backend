@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { Product } from '../../domain/entities/Product';
 import type { IProductRepository } from '../../domain/interfaces';
 import type { CreateProductDTO } from '../dtos/CreateProductDTO';
+import { NotFoundError } from '../../shared/errors/AppError';
 
 export class ProductFacade {
   constructor(private readonly productRepo: IProductRepository) {}
@@ -30,7 +31,7 @@ export class ProductFacade {
 
   async toggleAvailability(id: string, isAvailable: boolean): Promise<Product> {
     const product = await this.productRepo.findById(id);
-    if (!product) throw new Error('Producto no encontrado');
+    if (!product) throw new NotFoundError('Producto');
 
     if (isAvailable) {
       product.markInStock();

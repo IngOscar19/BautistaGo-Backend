@@ -1,4 +1,5 @@
 import type { Order, OrderStatus } from '../entities/Order';
+import { BadRequestError } from '../../shared/errors/AppError';
 
 export interface IOrderStatusState {
   next(order: Order): IOrderStatusState;
@@ -28,20 +29,20 @@ export class OutForDeliveryState implements IOrderStatusState {
   getStatus(): OrderStatus { return 'OUT_FOR_DELIVERY'; }
   next(_o: Order): IOrderStatusState { return new DeliveredState(); }
   cancel(_o: Order): IOrderStatusState {
-    throw new Error('No se puede cancelar un pedido en reparto');
+    throw new BadRequestError('No se puede cancelar un pedido en reparto');
   }
 }
 
 export class DeliveredState implements IOrderStatusState {
   getStatus(): OrderStatus { return 'DELIVERED'; }
-  next(_o: Order): IOrderStatusState { throw new Error('Pedido ya entregado'); }
-  cancel(_o: Order): IOrderStatusState { throw new Error('Pedido ya entregado'); }
+  next(_o: Order): IOrderStatusState { throw new BadRequestError('Pedido ya entregado'); }
+  cancel(_o: Order): IOrderStatusState { throw new BadRequestError('Pedido ya entregado'); }
 }
 
 export class CancelledState implements IOrderStatusState {
   getStatus(): OrderStatus { return 'CANCELLED'; }
-  next(_o: Order): IOrderStatusState { throw new Error('Pedido ya cancelado'); }
-  cancel(_o: Order): IOrderStatusState { throw new Error('Pedido ya cancelado'); }
+  next(_o: Order): IOrderStatusState { throw new BadRequestError('Pedido ya cancelado'); }
+  cancel(_o: Order): IOrderStatusState { throw new BadRequestError('Pedido ya cancelado'); }
 }
 
 export function stateFromStatus(status: OrderStatus): IOrderStatusState {

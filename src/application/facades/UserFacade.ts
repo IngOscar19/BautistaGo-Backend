@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { User, type UserRole } from '../../domain/entities/User';
 import type { IUserRepository } from '../../domain/interfaces';
 import type { CreateUserDTO } from '../dtos/CreateUserDTO';
+import { ConflictError } from '../../shared/errors/AppError';
 
 export class UserFacade {
   constructor(private readonly userRepo: IUserRepository) {}
@@ -10,7 +11,7 @@ export class UserFacade {
   async registerUser(dto: CreateUserDTO): Promise<User> {
     const existing = await this.userRepo.findByEmail(dto.email);
     if (existing) {
-      throw new Error('El correo electrónico ya está registrado');
+      throw new ConflictError('El correo electrónico ya está registrado');
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 12);

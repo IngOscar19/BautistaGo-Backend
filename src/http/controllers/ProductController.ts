@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { ProductFacade } from '../../application/facades/ProductFacade';
 import { PrismaProductRepository } from '../../infrastructure/db/PrismaProductRepository';
+import { NotFoundError } from '../../shared/errors/AppError';
 
 const facade = new ProductFacade(new PrismaProductRepository());
 
@@ -15,39 +16,57 @@ const ProductSchema = z.object({
 });
 
 export const ProductController = {
-  async create(req: Request, res: Response) {
-    const parsed = ProductSchema.safeParse(req.body);
-    if (!parsed.success) return res.status(400).json({ errors: parsed.error.flatten() });
-
-    const product = await facade.createProduct(parsed.data);
-    res.status(201).json(product);
-  },
-
-  async list(req: Request, res: Response) {
-    const includeInactive = req.query.includeAll === 'true';
-    const products = await facade.listCatalog(includeInactive);
-    res.json(products);
-  },
-
-  async getById(req: Request, res: Response) {
-    const { id } = req.params;
-    const product = await facade.getProductById(id);
-    if (!product) {
-      return res.status(404).json({ error: 'Producto no encontrado' });
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const parsed = ProductSchema.parse(req.body);
+      const product = await facade.createProduct(parsed);
+      res.status(201).json(product);
+    } catch (err) {
+      next(err);
     }
-    res.json(product);
   },
 
-  async toggleAvailability(req: Request, res: Response) {
-    const { id } = req.params;
-    const { isAvailable } = req.body;
-    const updated = await facade.toggleAvailability(id, Boolean(isAvailable));
-    res.json(updated);
+  async list(req: Request, res: Response, next: NextFunction) {
+    try {
+      const includeInactive = req.query.includeAll === 'true';
+      const products = await facade.listCatalog(includeInactive);
+      res.json(products);
+    } catch (err) {
+      next(err);
+    }
   },
 
-  async softDelete(req: Request, res: Response) {
-    const { id } = req.params;
-    await facade.softDeleteProduct(id);
-    res.status(204).send();
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const product = await facade.getProductById(id);
+      if (!product) {
+        throw new NotFoundError('Producto');
+      }
+      res.json(product);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async toggleAvailability(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { isAvailable } = req.body;
+      const updated = await facade.toggleAvailability(id, Boolean(isAvailable));
+      res.json(updated);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async softDelete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await facade.softDeleteProduct(id);
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
   },
 };
