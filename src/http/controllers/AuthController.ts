@@ -38,7 +38,7 @@ export const AuthController = {
         name: parsed.data.name,
         email: parsed.data.email,
         passwordHash,
-        role: 'CLIENT',
+        role: 'CUSTOMER',
         phone: parsed.data.phone,
       },
       select: {
@@ -52,11 +52,9 @@ export const AuthController = {
     });
 
     const jwtSecret = process.env.JWT_SECRET || 'secret';
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      jwtSecret,
-      { expiresIn: (process.env.JWT_EXPIRES_IN as any) || '15m' }
-    );
+    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, {
+      expiresIn: (process.env.JWT_EXPIRES_IN as any) || '15m',
+    });
 
     res.status(201).json({ user, token });
   },
@@ -81,11 +79,9 @@ export const AuthController = {
     }
 
     const jwtSecret = process.env.JWT_SECRET || 'secret';
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      jwtSecret,
-      { expiresIn: (process.env.JWT_EXPIRES_IN as any) || '15m' }
-    );
+    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, {
+      expiresIn: (process.env.JWT_EXPIRES_IN as any) || '15m',
+    });
 
     res.json({
       user: {

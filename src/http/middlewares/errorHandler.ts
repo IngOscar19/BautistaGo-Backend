@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 
-export function globalErrorHandler(
-  err: any,
-  _req: Request,
-  res: Response,
-  _next: NextFunction
-) {
+export function globalErrorHandler(err: any, _req: Request, res: Response, _next: NextFunction) {
   console.error('[Error Handler]', err);
 
   if (err instanceof ZodError) {
@@ -18,7 +13,7 @@ export function globalErrorHandler(
 
   // Errores de regla de negocio / dominio
   if (err instanceof Error) {
-    const isDomainError = 
+    const isDomainError =
       err.message.includes('no encontrado') ||
       err.message.includes('No se puede') ||
       err.message.includes('Pedido ya') ||

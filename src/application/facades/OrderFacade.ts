@@ -1,9 +1,9 @@
-import type { 
-  IOrderRepository, 
-  IWebSocketBroadcaster, 
+import type {
+  IOrderRepository,
+  IWebSocketBroadcaster,
   INotificationService,
   PaginationParams,
-  PaginatedResult 
+  PaginatedResult,
 } from '../../domain/interfaces';
 import type { Order, OrderStatus } from '../../domain/entities/Order';
 import { OrderFactory } from '../factories/OrderFactory';
@@ -13,7 +13,7 @@ export class OrderFacade {
   constructor(
     private readonly orderRepo: IOrderRepository,
     private readonly broadcaster: IWebSocketBroadcaster,
-    private readonly notifications?: INotificationService,
+    private readonly notifications?: INotificationService
   ) {}
 
   async createOrder(dto: CreateOrderDTO): Promise<Order> {
@@ -46,11 +46,10 @@ export class OrderFacade {
     await this.orderRepo.updateStatus(orderId, order.status);
 
     // Notificación en tiempo real a clientes conectados
-    this.broadcaster.broadcastToRoom(
-      `order_room_${orderId}`,
-      'order:status_changed',
-      { orderId, status: order.status }
-    );
+    this.broadcaster.broadcastToRoom(`order_room_${orderId}`, 'order:status_changed', {
+      orderId,
+      status: order.status,
+    });
 
     if (customerFcmToken && this.notifications) {
       await this.notifications.sendPush(
@@ -71,11 +70,10 @@ export class OrderFacade {
     order.cancel();
     await this.orderRepo.updateStatus(orderId, order.status);
 
-    this.broadcaster.broadcastToRoom(
-      `order_room_${orderId}`,
-      'order:status_changed',
-      { orderId, status: order.status }
-    );
+    this.broadcaster.broadcastToRoom(`order_room_${orderId}`, 'order:status_changed', {
+      orderId,
+      status: order.status,
+    });
 
     return order;
   }

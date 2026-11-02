@@ -1,3 +1,5 @@
+import type { PricingType } from '../entities/Product';
+
 export interface IPricingStrategy {
   calculateSubtotal(quantity: number, unitPrice: number): number;
 }
@@ -33,10 +35,11 @@ export class ByPiecePricingStrategy implements IPricingStrategy {
 export class PricingStrategyContext {
   private strategy: IPricingStrategy;
 
-  constructor(pricingType: 'BY_WEIGHT' | 'BY_PIECE') {
-    this.strategy = pricingType === 'BY_WEIGHT' 
-      ? new ByWeightPricingStrategy() 
-      : new ByPiecePricingStrategy();
+  constructor(pricingType: PricingType) {
+    this.strategy =
+      pricingType === 'BY_WEIGHT_KG' || pricingType === 'BY_WEIGHT_G'
+        ? new ByWeightPricingStrategy()
+        : new ByPiecePricingStrategy();
   }
 
   public setStrategy(strategy: IPricingStrategy): void {

@@ -32,7 +32,9 @@ httpServer.listen(PORT, async () => {
     await prisma.$connect();
     console.log(`🚀 BautistaGo backend corriendo en el puerto :${PORT}`);
   } catch (err) {
-    console.warn('⚠️ No se pudo conectar a la base de datos PostgreSQL en el inicio (verifique que el contenedor esté corriendo).');
+    console.warn(
+      '⚠️ No se pudo conectar a la base de datos PostgreSQL en el inicio (verifique que el contenedor esté corriendo).'
+    );
   }
 });
 

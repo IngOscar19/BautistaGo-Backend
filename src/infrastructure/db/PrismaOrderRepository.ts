@@ -14,7 +14,7 @@ export class PrismaOrderRepository implements IOrderRepository {
 
   async findByStatus(status: OrderStatus): Promise<Order[]> {
     const rows = await prisma.order.findMany({
-      where: { status, deletedAt: null },
+      where: { status },
       include: { items: true },
       orderBy: { createdAt: 'asc' },
     });
@@ -24,9 +24,9 @@ export class PrismaOrderRepository implements IOrderRepository {
   async findByCustomerId(customerId: string, pagination: PaginationParams): Promise<PaginatedResult<Order>> {
     const skip = (pagination.page - 1) * pagination.limit;
     const [total, rows] = await prisma.$transaction([
-      prisma.order.count({ where: { customerId, deletedAt: null } }),
+      prisma.order.count({ where: { customerId } }),
       prisma.order.findMany({
-        where: { customerId, deletedAt: null },
+        where: { customerId },
         include: { items: true },
         skip,
         take: pagination.limit,
@@ -58,7 +58,8 @@ export class PrismaOrderRepository implements IOrderRepository {
           create: order.items.map(i => ({
             productId: i.productId,
             quantity: new Decimal(i.quantity),
-            unitPrice: new Decimal(i.unitPrice),
+            pricingTypeSnapshot: i.pricingTypeSnapshot,
+            unitPriceSnapshot: new Decimal(i.unitPrice),
             subtotal: new Decimal(i.subtotal),
             notes: i.notes,
           })),
@@ -77,8 +78,16 @@ export class PrismaOrderRepository implements IOrderRepository {
   }
 
   private toDomain(row: any): Order {
-    const items = row.items.map((i: any) =>
-      new OrderItem(i.productId, Number(i.quantity), Number(i.unitPrice), Number(i.subtotal), i.notes)
+    const items = row.items.map(
+      (i: any) =>
+        new OrderItem(
+          i.productId,
+          Number(i.quantity),
+          Number(i.unitPriceSnapshot ?? i.unitPrice),
+          Number(i.subtotal),
+          i.notes,
+          i.pricingTypeSnapshot ?? 'BY_PIECE'
+        )
     );
     return new Order(
       row.id,

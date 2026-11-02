@@ -1,4 +1,4 @@
-export type UserRole = 'CLIENT' | 'KITCHEN' | 'DELIVERY' | 'ADMIN';
+export type UserRole = 'CUSTOMER' | 'KITCHEN_OPERATOR' | 'DELIVERY_DRIVER' | 'ADMIN';
 
 export class User {
   constructor(
@@ -9,7 +9,7 @@ export class User {
     public role: UserRole,
     public phone?: string,
     public isActive: boolean = true,
-    public deletedAt: Date | null = null,
+    public deletedAt: Date | null = null
   ) {}
 
   deactivate(): void {

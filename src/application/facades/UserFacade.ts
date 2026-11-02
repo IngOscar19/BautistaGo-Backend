@@ -14,16 +14,7 @@ export class UserFacade {
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
-    const user = new User(
-      randomUUID(),
-      dto.name,
-      dto.email,
-      passwordHash,
-      dto.role,
-      dto.phone,
-      true,
-      null
-    );
+    const user = new User(randomUUID(), dto.name, dto.email, passwordHash, dto.role, dto.phone, true, null);
 
     return await this.userRepo.save(user);
   }
