@@ -10,6 +10,8 @@ export interface CreateOrderItemDTO {
 export interface CreateOrderDTO {
   orderType: OrderType;
   customerId?: string | null;
+  driverId?: string | null;
   deliveryAddress?: string | null;
+  deliveryFee?: number;
   items: CreateOrderItemDTO[];
 }

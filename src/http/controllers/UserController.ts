@@ -8,7 +8,7 @@ const CreateEmployeeSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(6),
-  role: z.enum(['KITCHEN', 'DELIVERY', 'ADMIN']),
+  role: z.enum(['KITCHEN_OPERATOR', 'DELIVERY_DRIVER', 'ADMIN']),
   phone: z.string().optional(),
 });
 
@@ -38,7 +38,7 @@ export const UserController = {
   async listEmployees(req: Request, res: Response) {
     const role = req.query.role as UserRole | undefined;
     const whereClause: any = {
-      role: role ? role : { in: ['KITCHEN', 'DELIVERY', 'ADMIN'] },
+      role: role ? role : { in: ['KITCHEN_OPERATOR', 'DELIVERY_DRIVER', 'ADMIN'] },
     };
 
     const users = await prisma.user.findMany({

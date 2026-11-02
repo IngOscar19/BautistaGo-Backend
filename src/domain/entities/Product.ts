@@ -1,4 +1,6 @@
-export type PricingType = 'BY_WEIGHT' | 'BY_PIECE';
+import type { PricingType } from '../types/PricingType';
+
+export type { PricingType } from '../types/PricingType';
 
 export class Product {
   constructor(

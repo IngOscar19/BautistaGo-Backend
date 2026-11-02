@@ -1,5 +1,8 @@
 import type { IOrderStatusState } from '../states/OrderState';
 import { stateFromStatus } from '../states/OrderState';
+import { OrderItem } from './OrderItem';
+
+export { OrderItem } from './OrderItem';
 
 export type OrderStatus = 
   | 'PENDING_KITCHEN'
@@ -10,16 +13,6 @@ export type OrderStatus =
   | 'CANCELLED';
 
 export type OrderType = 'COUNTER' | 'DINE_IN' | 'DELIVERY';
-
-export class OrderItem {
-  constructor(
-    public readonly productId: string,
-    public readonly quantity: number, // Kilos o piezas
-    public readonly unitPrice: number,
-    public readonly subtotal: number,
-    public readonly notes?: string,
-  ) {}
-}
 
 export class Order {
   private _state: IOrderStatusState;
@@ -32,6 +25,10 @@ export class Order {
     public readonly customerId: string | null,
     public readonly deliveryAddress: string | null,
     items: OrderItem[],
+    public readonly subtotal: number,
+    public readonly deliveryFee: number,
+    public readonly total: number,
+    public readonly driverId: string | null,
     status: OrderStatus = 'PENDING_KITCHEN',
     public readonly createdAt: Date = new Date(),
   ) {
@@ -41,10 +38,6 @@ export class Order {
 
   get status(): OrderStatus { return this._state.getStatus(); }
   get items(): ReadonlyArray<OrderItem> { return this._items; }
-
-  total(): number {
-    return this._items.reduce((sum, item) => sum + item.subtotal, 0);
-  }
 
   advanceState(): void { this._state = this._state.next(this); }
   cancel(): void       { this._state = this._state.cancel(this); }

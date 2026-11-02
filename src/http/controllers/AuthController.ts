@@ -38,7 +38,7 @@ export const AuthController = {
         name: parsed.data.name,
         email: parsed.data.email,
         passwordHash,
-        role: 'CLIENT',
+        role: 'CUSTOMER',
         phone: parsed.data.phone,
       },
       select: {
