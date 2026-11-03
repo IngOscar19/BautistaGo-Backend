@@ -16,7 +16,8 @@ export class OrderFactory {
         item.quantity,
         item.unitPrice,
         subtotal,
-        item.notes
+        item.notes,
+        item.pricingTypeSnapshot
       );
     });
 

@@ -12,10 +12,17 @@ export interface PaginatedResult<T> {
   totalPages: number;
 }
 
+export interface OrderFilters {
+  status?: OrderStatus;
+  driverId?: string;
+}
+
 export interface IOrderRepository {
   findById(id: string): Promise<Order | null>;
   findByStatus(status: OrderStatus): Promise<Order[]>;
   findByCustomerId(customerId: string, pagination: PaginationParams): Promise<PaginatedResult<Order>>;
+  findAll(filters: OrderFilters, pagination: PaginationParams): Promise<PaginatedResult<Order>>;
   save(order: Order): Promise<Order>;
   updateStatus(id: string, status: OrderStatus): Promise<void>;
+  assignDriver(orderId: string, driverId: string): Promise<void>;
 }

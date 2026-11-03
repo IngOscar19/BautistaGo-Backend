@@ -2,6 +2,7 @@ import type {
   IOrderRepository, 
   IWebSocketBroadcaster, 
   INotificationService,
+  OrderFilters,
   PaginationParams,
   PaginatedResult 
 } from '../../domain/interfaces';
@@ -37,6 +38,28 @@ export class OrderFacade {
 
   async getOrdersByStatus(status: OrderStatus): Promise<Order[]> {
     return await this.orderRepo.findByStatus(status);
+  }
+
+  async getAll(filters: OrderFilters, pagination: PaginationParams): Promise<PaginatedResult<Order>> {
+    return await this.orderRepo.findAll(filters, pagination);
+  }
+
+  async assignDriver(orderId: string, driverId: string): Promise<void> {
+    const order = await this.orderRepo.findById(orderId);
+    if (!order) throw new NotFoundError(`Pedido ${orderId}`);
+
+    await this.orderRepo.assignDriver(orderId, driverId);
+
+    this.broadcaster.broadcastToRoom(
+      `driver_room_${driverId}`,
+      'order:assigned',
+      {
+        orderId,
+        driverId,
+        orderNumber: order.orderNumber,
+        status: order.status,
+      }
+    );
   }
 
   async advanceStatus(orderId: string, customerFcmToken?: string): Promise<Order> {

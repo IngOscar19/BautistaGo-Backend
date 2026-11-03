@@ -1,10 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import { z } from 'zod';
 import { OrderFacade } from '../../application/facades/OrderFacade';
 import { PrismaOrderRepository } from '../../infrastructure/db/PrismaOrderRepository';
 import { SocketBroadcaster } from '../../infrastructure/websockets/SocketBroadcaster';
 import { FcmService } from '../../infrastructure/notifications/FcmService';
 import { io } from '../../infrastructure/websockets/io';
+import { CreateOrderSchema } from '../../application/dtos/CreateOrderDTO';
+import {
+  AdvanceOrderStatusSchema,
+  AssignDriverSchema,
+  CancelOrderSchema,
+  ListOrdersQuerySchema,
+} from '../../application/dtos/OrderDTOs';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 import type { OrderStatus } from '../../domain/entities/Order';
 import { NotFoundError, UnauthorizedError } from '../../shared/errors/AppError';
@@ -17,23 +23,6 @@ const getFacade = () => {
   return new OrderFacade(orderRepo, broadcaster, fcmService);
 };
 
-const CreateOrderItemSchema = z.object({
-  productId: z.string().uuid(),
-  quantity: z.number().positive(),
-  unitPrice: z.number().positive(),
-  notes: z.string().optional(),
-});
-
-const CreateOrderSchema = z.object({
-  orderType: z.enum(['COUNTER', 'DINE_IN', 'DELIVERY']),
-  deliveryAddress: z.string().optional().nullable(),
-  items: z.array(CreateOrderItemSchema).min(1, 'El pedido debe contener al menos un producto'),
-});
-
-const AdvanceStatusSchema = z.object({
-  customerFcmToken: z.string().optional(),
-});
-
 export const OrderController = {
   async create(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
@@ -45,6 +34,21 @@ export const OrderController = {
       });
 
       res.status(201).json(order);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const query = ListOrdersQuerySchema.parse(req.query);
+      const facade = getFacade();
+      const result = await facade.getAll(
+        { status: query.status, driverId: query.driverId },
+        { page: query.page, limit: query.limit }
+      );
+
+      res.json(result);
     } catch (err) {
       next(err);
     }
@@ -80,7 +84,7 @@ export const OrderController = {
   async advanceStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const parsed = AdvanceStatusSchema.parse(req.body);
+      const parsed = AdvanceOrderStatusSchema.parse(req.body ?? {});
       const customerFcmToken = parsed.customerFcmToken;
 
       const facade = getFacade();
@@ -91,9 +95,25 @@ export const OrderController = {
     }
   },
 
+  async assignDriver(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { driverId } = AssignDriverSchema.parse(req.body ?? {});
+
+      const facade = getFacade();
+      await facade.assignDriver(id, driverId);
+
+      res.json({ message: 'Repartidor asignado correctamente' });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   async cancel(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
+      CancelOrderSchema.parse(req.body ?? {});
+
       const facade = getFacade();
       const cancelled = await facade.cancelOrder(id);
       res.json(cancelled);
@@ -109,11 +129,13 @@ export const OrderController = {
         throw new UnauthorizedError('No autenticado');
       }
 
-      const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
-      const limit = Math.max(1, parseInt(req.query.limit as string, 10) || 10);
+      const query = ListOrdersQuerySchema.parse(req.query);
 
       const facade = getFacade();
-      const history = await facade.getCustomerHistory(customerId, { page, limit });
+      const history = await facade.getCustomerHistory(customerId, {
+        page: query.page,
+        limit: query.limit,
+      });
       res.json(history);
     } catch (err) {
       next(err);
