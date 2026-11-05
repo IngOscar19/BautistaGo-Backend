@@ -1,21 +1,7 @@
 import { z } from 'zod';
 
-export const PricingTypeSnapshotSchema = z.enum([
-  'BY_WEIGHT_KG',
-  'BY_WEIGHT_G',
-  'BY_PIECE',
-]);
+export const PricingTypeSnapshotSchema = z.enum(['BY_WEIGHT_KG', 'BY_WEIGHT_G', 'BY_PIECE']);
 
-<<<<<<< HEAD
-export interface CreateOrderDTO {
-  orderType: OrderType;
-  customerId?: string | null;
-  driverId?: string | null;
-  deliveryAddress?: string | null;
-  deliveryFee?: number;
-  items: CreateOrderItemDTO[];
-}
-=======
 export const CreateOrderItemSchema = z.object({
   productId: z.string().uuid('productId debe ser un UUID válido'),
   quantity: z.number().positive('La cantidad debe ser mayor a 0'),
@@ -37,4 +23,3 @@ export const CreateOrderSchema = z.object({
 
 export type CreateOrderItemDTO = z.infer<typeof CreateOrderItemSchema>;
 export type CreateOrderDTO = z.infer<typeof CreateOrderSchema>;
->>>>>>> feature/BE-07-order-module

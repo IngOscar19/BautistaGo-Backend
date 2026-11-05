@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { z, ZodError } from 'zod';
+import { z } from 'zod';
 import { globalErrorHandler } from '../errorHandler';
 import { requestLogger } from '../requestLogger';
 import {

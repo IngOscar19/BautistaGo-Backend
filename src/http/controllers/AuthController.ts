@@ -112,43 +112,6 @@ export const AuthController = {
       logger.error('Error al registrar usuario', { error: err });
       next(err);
     }
-<<<<<<< HEAD
-=======
-
-    const existing = await prisma.user.findUnique({
-      where: { email: parsed.data.email },
-    });
-
-    if (existing) {
-      return res.status(409).json({ error: 'El correo electrónico ya se encuentra registrado' });
-    }
-
-    const passwordHash = await bcrypt.hash(parsed.data.password, 12);
-    const user = await prisma.user.create({
-      data: {
-        name: parsed.data.name,
-        email: parsed.data.email,
-        passwordHash,
-        role: 'CUSTOMER',
-        phone: parsed.data.phone,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        phone: true,
-        createdAt: true,
-      },
-    });
-
-    const jwtSecret = process.env.JWT_SECRET || 'secret';
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, {
-      expiresIn: (process.env.JWT_EXPIRES_IN as any) || '15m',
-    });
-
-    res.status(201).json({ user, token });
->>>>>>> feature/BE-01-project-scaffold
   },
 
   async login(req: Request, res: Response, next: NextFunction) {
@@ -188,38 +151,6 @@ export const AuthController = {
       logger.error('Error al iniciar sesión', { error: err });
       next(err);
     }
-<<<<<<< HEAD
-=======
-
-    const user = await prisma.user.findFirst({
-      where: { email: parsed.data.email, deletedAt: null, isActive: true },
-    });
-
-    if (!user) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
-    }
-
-    const validPassword = await bcrypt.compare(parsed.data.password, user.passwordHash);
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
-    }
-
-    const jwtSecret = process.env.JWT_SECRET || 'secret';
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, {
-      expiresIn: (process.env.JWT_EXPIRES_IN as any) || '15m',
-    });
-
-    res.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        phone: user.phone,
-      },
-      token,
-    });
->>>>>>> feature/BE-01-project-scaffold
   },
 
   async refresh(req: Request, res: Response, next: NextFunction) {
@@ -246,7 +177,7 @@ export const AuthController = {
       }
 
       // Rotación: se invalida el token anterior y se emite uno nuevo (RF de seguridad)
-      const tokens = await prisma.$transaction(async (tx) => {
+      const tokens = await prisma.$transaction(async tx => {
         await tx.refreshToken.update({
           where: { id: stored.id },
           data: { isRevoked: true },

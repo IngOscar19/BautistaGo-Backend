@@ -49,7 +49,7 @@ export class FcmService implements INotificationService {
     tokens: string[],
     title: string,
     body: string,
-    data?: Record<string, string>,
+    data?: Record<string, string>
   ): Promise<MulticastResult> {
     const defaultResult: MulticastResult = { successCount: 0, failureCount: 0, invalidTokens: [] };
 

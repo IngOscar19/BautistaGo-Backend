@@ -8,12 +8,7 @@ export const logger = createLogger({
   level: process.env.LOG_LEVEL ?? 'info',
   format: isProduction
     ? combine(timestamp(), errors({ stack: true }), json())
-    : combine(
-        colorize(),
-        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        errors({ stack: true }),
-        simple()
-      ),
+    : combine(colorize(), timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), errors({ stack: true }), simple()),
   transports: [new transports.Console()],
   exitOnError: false,
 });

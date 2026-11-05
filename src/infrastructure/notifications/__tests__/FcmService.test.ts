@@ -45,22 +45,16 @@ describe('FcmService', () => {
     it('Firebase no inicializado → emite warning y no lanza error', async () => {
       (admin.apps as any) = [];
 
-      await expect(
-        fcmService.sendPush('fake-token', 'Título', 'Cuerpo')
-      ).resolves.not.toThrow();
+      await expect(fcmService.sendPush('fake-token', 'Título', 'Cuerpo')).resolves.not.toThrow();
 
-      expect(loggerWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Firebase Admin no está inicializado')
-      );
+      expect(loggerWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Firebase Admin no está inicializado'));
       expect(sendMock).not.toHaveBeenCalled();
     });
 
     it('Token inválido o vacío → emite warning y no llama a Firebase', async () => {
       await fcmService.sendPush('', 'Título', 'Cuerpo');
 
-      expect(loggerWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Token FCM no provisto o inválido')
-      );
+      expect(loggerWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Token FCM no provisto o inválido'));
       expect(sendMock).not.toHaveBeenCalled();
     });
 
@@ -91,9 +85,7 @@ describe('FcmService', () => {
       const error = { code: 'messaging/registration-token-not-registered', message: 'Token not registered' };
       sendMock.mockRejectedValueOnce(error);
 
-      await expect(
-        fcmService.sendPush('unregistered-token', 'Título', 'Cuerpo')
-      ).resolves.not.toThrow();
+      await expect(fcmService.sendPush('unregistered-token', 'Título', 'Cuerpo')).resolves.not.toThrow();
 
       expect(loggerWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining('Token FCM inválido o no registrado'),
@@ -105,9 +97,7 @@ describe('FcmService', () => {
       const error = new Error('Network timeout');
       sendMock.mockRejectedValueOnce(error);
 
-      await expect(
-        fcmService.sendPush('valid-token', 'Título', 'Cuerpo')
-      ).resolves.not.toThrow();
+      await expect(fcmService.sendPush('valid-token', 'Título', 'Cuerpo')).resolves.not.toThrow();
 
       expect(loggerErrorSpy).toHaveBeenCalledWith(
         expect.stringContaining('Error al enviar notificación push con FCM'),
@@ -123,18 +113,14 @@ describe('FcmService', () => {
       const result = await fcmService.sendMulticast(['token1', 'token2'], 'Aviso', 'Texto');
 
       expect(result).toEqual({ successCount: 0, failureCount: 0, invalidTokens: [] });
-      expect(loggerWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Firebase Admin no está inicializado')
-      );
+      expect(loggerWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Firebase Admin no está inicializado'));
     });
 
     it('Lista de tokens vacía → emite warning y retorna resultado vacío', async () => {
       const result = await fcmService.sendMulticast([], 'Aviso', 'Texto');
 
       expect(result).toEqual({ successCount: 0, failureCount: 0, invalidTokens: [] });
-      expect(loggerWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Lista de tokens vacía')
-      );
+      expect(loggerWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Lista de tokens vacía'));
     });
 
     it('sendMulticast exitoso filtra tokens inválidos y retorna estadísticas', async () => {
@@ -204,9 +190,7 @@ describe('FcmService', () => {
     it('Topic vacío → emite warning', async () => {
       await fcmService.sendToTopic('', 'Título', 'Cuerpo');
 
-      expect(loggerWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Topic no provisto o inválido')
-      );
+      expect(loggerWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Topic no provisto o inválido'));
     });
 
     it('sendToTopic exitoso → envía al topic correspondiente', async () => {

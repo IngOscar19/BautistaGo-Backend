@@ -14,7 +14,7 @@ function buildOrder(status: OrderStatus = 'PENDING_KITCHEN'): Order {
     100,
     null,
     status,
-    new Date('2026-01-01T00:00:00.000Z'),
+    new Date('2026-01-01T00:00:00.000Z')
   );
 }
 
@@ -24,12 +24,7 @@ describe('OrderState', () => {
 
     expect(order.status).toBe('PENDING_KITCHEN');
 
-    const expectedStatuses: OrderStatus[] = [
-      'IN_PREPARATION',
-      'READY_FOR_PICKUP',
-      'OUT_FOR_DELIVERY',
-      'DELIVERED',
-    ];
+    const expectedStatuses: OrderStatus[] = ['IN_PREPARATION', 'READY_FOR_PICKUP', 'OUT_FOR_DELIVERY', 'DELIVERED'];
 
     for (const expected of expectedStatuses) {
       order.advanceState();

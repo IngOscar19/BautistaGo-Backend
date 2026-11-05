@@ -128,17 +128,6 @@ export class PrismaOrderRepository implements IOrderRepository {
   }
 
   private toDomain(row: any): Order {
-<<<<<<< HEAD
-    const items = row.items.map((i: any) =>
-      new OrderItem(
-        i.productId,
-        Number(i.quantity),
-        Number(i.unitPriceSnapshot),
-        Number(i.subtotal),
-        i.notes,
-        i.pricingTypeSnapshot
-      )
-=======
     const items = row.items.map(
       (i: any) =>
         new OrderItem(
@@ -149,7 +138,6 @@ export class PrismaOrderRepository implements IOrderRepository {
           i.notes,
           i.pricingTypeSnapshot ?? 'BY_PIECE'
         )
->>>>>>> feature/BE-01-project-scaffold
     );
     return new Order(
       row.id,

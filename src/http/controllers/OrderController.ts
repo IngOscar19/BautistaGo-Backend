@@ -23,27 +23,6 @@ const getFacade = () => {
   return new OrderFacade(orderRepo, broadcaster, fcmService);
 };
 
-<<<<<<< HEAD
-const CreateOrderItemSchema = z.object({
-  productId: z.string().uuid(),
-  quantity: z.number().positive(),
-  unitPrice: z.number().positive(),
-  notes: z.string().optional(),
-});
-
-const CreateOrderSchema = z.object({
-  orderType: z.enum(['COUNTER', 'DINE_IN', 'DELIVERY']),
-  deliveryAddress: z.string().optional().nullable(),
-  deliveryFee: z.number().nonnegative().optional(),
-  items: z.array(CreateOrderItemSchema).min(1, 'El pedido debe contener al menos un producto'),
-});
-
-const AdvanceStatusSchema = z.object({
-  customerFcmToken: z.string().optional(),
-});
-
-=======
->>>>>>> feature/BE-07-order-module
 export const OrderController = {
   async create(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {

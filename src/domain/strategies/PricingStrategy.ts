@@ -1,12 +1,5 @@
-<<<<<<< HEAD
-import type { PricingType } from '../entities/Product';
-<<<<<<< HEAD
-import { BadRequestError } from '../../shared/errors/AppError';
-=======
->>>>>>> feature/BE-01-project-scaffold
-=======
 import type { PricingType } from '../types/PricingType';
->>>>>>> feature/BE-02-domain-entities
+import { BadRequestError } from '../../shared/errors/AppError';
 
 export interface IPricingStrategy {
   calculateSubtotal(quantity: number, unitPrice: number): number;
@@ -34,7 +27,7 @@ export class ByWeightGPricingStrategy implements IPricingStrategy {
    */
   calculateSubtotal(quantity: number, unitPrice: number): number {
     if (quantity <= 0 || unitPrice <= 0) {
-      throw new Error('La cantidad y el precio por kilo deben ser mayores a 0');
+      throw new BadRequestError('La cantidad y el precio por kilo deben ser mayores a 0');
     }
     return Number(((quantity / 1000) * unitPrice).toFixed(2));
   }
@@ -58,20 +51,7 @@ export class PricingStrategyContext {
   private strategy: IPricingStrategy;
 
   constructor(pricingType: PricingType) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    this.strategy = (pricingType === 'BY_WEIGHT_KG' || pricingType === 'BY_WEIGHT_G')
-      ? new ByWeightPricingStrategy() 
-      : new ByPiecePricingStrategy();
-=======
-    this.strategy =
-      pricingType === 'BY_WEIGHT_KG' || pricingType === 'BY_WEIGHT_G'
-        ? new ByWeightPricingStrategy()
-        : new ByPiecePricingStrategy();
->>>>>>> feature/BE-01-project-scaffold
-=======
     this.strategy = PricingStrategyContext.createStrategy(pricingType);
->>>>>>> feature/BE-02-domain-entities
   }
 
   public setStrategy(strategy: IPricingStrategy): void {
@@ -84,9 +64,12 @@ export class PricingStrategyContext {
 
   private static createStrategy(pricingType: PricingType): IPricingStrategy {
     switch (pricingType) {
-      case 'BY_WEIGHT_KG': return new ByWeightPricingStrategy();
-      case 'BY_WEIGHT_G': return new ByWeightGPricingStrategy();
-      case 'BY_PIECE': return new ByPiecePricingStrategy();
+      case 'BY_WEIGHT_KG':
+        return new ByWeightPricingStrategy();
+      case 'BY_WEIGHT_G':
+        return new ByWeightGPricingStrategy();
+      case 'BY_PIECE':
+        return new ByPiecePricingStrategy();
     }
   }
 }

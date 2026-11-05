@@ -50,16 +50,12 @@ export class OrderFacade {
 
     await this.orderRepo.assignDriver(orderId, driverId);
 
-    this.broadcaster.broadcastToRoom(
-      `driver_room_${driverId}`,
-      'order:assigned',
-      {
-        orderId,
-        driverId,
-        orderNumber: order.orderNumber,
-        status: order.status,
-      }
-    );
+    this.broadcaster.broadcastToRoom(`driver_room_${driverId}`, 'order:assigned', {
+      orderId,
+      driverId,
+      orderNumber: order.orderNumber,
+      status: order.status,
+    });
   }
 
   async advanceStatus(orderId: string, customerFcmToken?: string): Promise<Order> {

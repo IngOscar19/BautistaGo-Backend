@@ -22,9 +22,7 @@ describe('Auth (integración)', () => {
   });
 
   it('register crea usuario con rol CUSTOMER y devuelve tokens', async () => {
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({ name: 'Usuario de Prueba', email, password });
+    const res = await request(app).post('/api/auth/register').send({ name: 'Usuario de Prueba', email, password });
 
     expect(res.status).toBe(201);
     expect(res.body.user.role).toBe('CUSTOMER');
@@ -37,9 +35,7 @@ describe('Auth (integración)', () => {
   });
 
   it('login devuelve tokens para credenciales correctas', async () => {
-    const res = await request(app)
-      .post('/api/auth/login')
-      .send({ email, password });
+    const res = await request(app).post('/api/auth/login').send({ email, password });
 
     expect(res.status).toBe(200);
     expect(res.body.user.id).toBe(userId);
@@ -48,9 +44,7 @@ describe('Auth (integración)', () => {
   });
 
   it('ruta protegida con token válido retorna el perfil', async () => {
-    const res = await request(app)
-      .get('/api/auth/me')
-      .set('Authorization', `Bearer ${accessToken}`);
+    const res = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${accessToken}`);
 
     expect(res.status).toBe(200);
     expect(res.body.email).toBe(email);
@@ -62,9 +56,7 @@ describe('Auth (integración)', () => {
   });
 
   it('login con contraseña incorrecta → 401', async () => {
-    const res = await request(app)
-      .post('/api/auth/login')
-      .send({ email, password: 'contraseña-equivocada' });
+    const res = await request(app).post('/api/auth/login').send({ email, password: 'contraseña-equivocada' });
 
     expect(res.status).toBe(401);
   });
@@ -72,9 +64,7 @@ describe('Auth (integración)', () => {
   it('refresh rota el token y revoca el anterior', async () => {
     const oldRefreshToken = refreshToken;
 
-    const res = await request(app)
-      .post('/api/auth/refresh')
-      .send({ refreshToken: oldRefreshToken });
+    const res = await request(app).post('/api/auth/refresh').send({ refreshToken: oldRefreshToken });
 
     expect(res.status).toBe(200);
     expect(res.body.accessToken).toBeTruthy();
@@ -83,9 +73,7 @@ describe('Auth (integración)', () => {
     accessToken = res.body.accessToken;
     refreshToken = res.body.refreshToken;
 
-    const reuse = await request(app)
-      .post('/api/auth/refresh')
-      .send({ refreshToken: oldRefreshToken });
+    const reuse = await request(app).post('/api/auth/refresh').send({ refreshToken: oldRefreshToken });
 
     expect(reuse.status).toBe(401);
   });
@@ -99,17 +87,13 @@ describe('Auth (integración)', () => {
     expect(res.status).toBe(200);
     expect(res.body.message).toBe('Sesión cerrada');
 
-    const afterLogout = await request(app)
-      .post('/api/auth/refresh')
-      .send({ refreshToken });
+    const afterLogout = await request(app).post('/api/auth/refresh').send({ refreshToken });
 
     expect(afterLogout.status).toBe(401);
   });
 
   it('ruta con rol incorrecto (CUSTOMER intenta acceso ADMIN) → 403', async () => {
-    const res = await request(app)
-      .get('/api/users/employees')
-      .set('Authorization', `Bearer ${accessToken}`);
+    const res = await request(app).get('/api/users/employees').set('Authorization', `Bearer ${accessToken}`);
 
     expect(res.status).toBe(403);
   });

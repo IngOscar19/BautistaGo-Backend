@@ -41,20 +41,12 @@ export const UserController = {
     }
   },
 
-<<<<<<< HEAD
   async listEmployees(req: Request, res: Response, next: NextFunction) {
     try {
       const role = req.query.role as UserRole | undefined;
       const whereClause: any = {
         role: role ? role : { in: ['KITCHEN_OPERATOR', 'DELIVERY_DRIVER', 'ADMIN'] },
       };
-=======
-  async listEmployees(req: Request, res: Response) {
-    const role = req.query.role as UserRole | undefined;
-    const whereClause: any = {
-      role: role ? role : { in: ['KITCHEN_OPERATOR', 'DELIVERY_DRIVER', 'ADMIN'] },
-    };
->>>>>>> feature/BE-01-project-scaffold
 
       const users = await prisma.user.findMany({
         where: whereClause,

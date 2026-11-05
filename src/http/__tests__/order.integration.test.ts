@@ -90,10 +90,7 @@ describe('Order (integración)', () => {
   afterAll(async () => {
     await prisma.order.deleteMany({
       where: {
-        OR: [
-          { customerId: { in: userIds } },
-          { driverId: { in: userIds } },
-        ],
+        OR: [{ customerId: { in: userIds } }, { driverId: { in: userIds } }],
       },
     });
     await prisma.deliveryDriver.deleteMany({ where: { userId: { in: userIds } } });
@@ -189,9 +186,7 @@ describe('Order (integración)', () => {
   it('GET /api/orders permite filtros/paginación solo a roles autorizados', async () => {
     await createOrder();
 
-    const forbidden = await request(app)
-      .get('/api/orders')
-      .set('Authorization', `Bearer ${customerToken}`);
+    const forbidden = await request(app).get('/api/orders').set('Authorization', `Bearer ${customerToken}`);
 
     expect(forbidden.status).toBe(403);
 

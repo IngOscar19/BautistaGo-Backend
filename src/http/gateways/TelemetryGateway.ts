@@ -70,18 +70,6 @@ export class TelemetryGateway {
         socket.join('kitchen_room');
       });
 
-<<<<<<< HEAD
-=======
-      // Suscripción del repartidor a su canal de asignaciones
-      socket.on('driver:subscribe', () => {
-        const user = (socket as any).user as { id?: string } | undefined;
-        if (user?.id) {
-          socket.join(`driver_room_${user.id}`);
-        }
-      });
-
-      // Suscripción de cliente a su comanda
->>>>>>> feature/BE-07-order-module
       socket.on('order:subscribe', (orderId: string) => {
         socket.join(`order_room_${orderId}`);
       });
@@ -147,7 +135,7 @@ export class TelemetryGateway {
 
       socket.on('disconnect', () => {
         logger.debug('Socket desconectado', { socketId: socket.id });
-        socket.rooms.forEach((room) => socket.leave(room));
+        socket.rooms.forEach(room => socket.leave(room));
       });
     });
   }
