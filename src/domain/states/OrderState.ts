@@ -30,6 +30,7 @@ export class OutForDeliveryState implements IOrderStatusState {
   getStatus(): OrderStatus { return 'OUT_FOR_DELIVERY'; }
   next(_o: Order): IOrderStatusState { return new DeliveredState(); }
   cancel(_o: Order): IOrderStatusState {
+<<<<<<< HEAD
     throw new BadRequestError('No se puede cancelar un pedido en reparto');
 =======
   getStatus(): OrderStatus {
@@ -75,6 +76,8 @@ export class OutForDeliveryState implements IOrderStatusState {
     return new DeliveredState();
   }
   cancel(_o: Order): IOrderStatusState {
+=======
+>>>>>>> feature/BE-02-domain-entities
     throw new Error('No se puede cancelar un pedido en reparto');
 >>>>>>> feature/BE-01-project-scaffold
   }
@@ -83,12 +86,18 @@ export class OutForDeliveryState implements IOrderStatusState {
 export class DeliveredState implements IOrderStatusState {
 <<<<<<< HEAD
   getStatus(): OrderStatus { return 'DELIVERED'; }
+<<<<<<< HEAD
   next(_o: Order): IOrderStatusState { throw new BadRequestError('Pedido ya entregado'); }
   cancel(_o: Order): IOrderStatusState { throw new BadRequestError('Pedido ya entregado'); }
+=======
+  next(_o: Order): IOrderStatusState { throw new Error('Pedido ya entregado'); }
+  cancel(_o: Order): IOrderStatusState { throw new Error('Pedido ya entregado'); }
+>>>>>>> feature/BE-02-domain-entities
 }
 
 export class CancelledState implements IOrderStatusState {
   getStatus(): OrderStatus { return 'CANCELLED'; }
+<<<<<<< HEAD
   next(_o: Order): IOrderStatusState { throw new BadRequestError('Pedido ya cancelado'); }
   cancel(_o: Order): IOrderStatusState { throw new BadRequestError('Pedido ya cancelado'); }
 =======
@@ -114,6 +123,10 @@ export class CancelledState implements IOrderStatusState {
     throw new Error('Pedido ya cancelado');
   }
 >>>>>>> feature/BE-01-project-scaffold
+=======
+  next(_o: Order): IOrderStatusState { throw new Error('Pedido ya cancelado'); }
+  cancel(_o: Order): IOrderStatusState { throw new Error('Pedido ya cancelado'); }
+>>>>>>> feature/BE-02-domain-entities
 }
 
 export function stateFromStatus(status: OrderStatus): IOrderStatusState {

@@ -15,10 +15,14 @@ orderRoutes.get('/:id', authenticateJwt, OrderController.getById);
 
 // Listar órdenes por estado (ej. cocina o repartidores)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> feature/BE-02-domain-entities
 orderRoutes.get('/status/:status', authenticateJwt, requireRole('KITCHEN_OPERATOR', 'DELIVERY_DRIVER', 'ADMIN'), OrderController.getByStatus);
 
 // Avance de estado de comanda (Cocina -> Listo -> Reparto -> Entregado)
 orderRoutes.patch('/:id/status', authenticateJwt, requireRole('KITCHEN_OPERATOR', 'DELIVERY_DRIVER', 'ADMIN'), OrderController.advanceStatus);
+<<<<<<< HEAD
 =======
 orderRoutes.get(
   '/status/:status',
@@ -35,6 +39,8 @@ orderRoutes.patch(
   OrderController.advanceStatus
 );
 >>>>>>> feature/BE-01-project-scaffold
+=======
+>>>>>>> feature/BE-02-domain-entities
 
 // Cancelación de comanda
 orderRoutes.post('/:id/cancel', authenticateJwt, requireRole('KITCHEN_OPERATOR', 'ADMIN'), OrderController.cancel);

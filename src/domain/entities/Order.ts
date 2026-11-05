@@ -1,9 +1,15 @@
 import type { IOrderStatusState } from '../states/OrderState';
 import { stateFromStatus } from '../states/OrderState';
+<<<<<<< HEAD
 import type { PricingType } from './Product';
 
 <<<<<<< HEAD
 import type { PricingType } from './Product';
+=======
+import { OrderItem } from './OrderItem';
+
+export { OrderItem } from './OrderItem';
+>>>>>>> feature/BE-02-domain-entities
 
 export type OrderStatus = 
   | 'PENDING_KITCHEN'
@@ -19,6 +25,7 @@ export type OrderStatus =
 
 export type OrderType = 'COUNTER' | 'DINE_IN' | 'DELIVERY';
 
+<<<<<<< HEAD
 export class OrderItem {
   constructor(
     public readonly productId: string,
@@ -38,6 +45,8 @@ export class OrderItem {
   }
 }
 
+=======
+>>>>>>> feature/BE-02-domain-entities
 export class Order {
   private _state: IOrderStatusState;
   private _items: OrderItem[] = [];
@@ -49,6 +58,10 @@ export class Order {
     public readonly customerId: string | null,
     public readonly deliveryAddress: string | null,
     items: OrderItem[],
+    public readonly subtotal: number,
+    public readonly deliveryFee: number,
+    public readonly total: number,
+    public readonly driverId: string | null,
     status: OrderStatus = 'PENDING_KITCHEN',
     public readonly createdAt: Date = new Date()
   ) {
@@ -63,6 +76,7 @@ export class Order {
     return this._items;
   }
 
+<<<<<<< HEAD
   total(): number {
     return this._items.reduce((sum, item) => sum + item.subtotal, 0);
   }
@@ -73,4 +87,8 @@ export class Order {
   cancel(): void {
     this._state = this._state.cancel(this);
   }
+=======
+  advanceState(): void { this._state = this._state.next(this); }
+  cancel(): void       { this._state = this._state.cancel(this); }
+>>>>>>> feature/BE-02-domain-entities
 }

@@ -14,6 +14,10 @@ export class OrderFactory {
       return new OrderItem(item.productId, item.quantity, item.unitPrice, subtotal, item.notes);
     });
 
+    const subtotal = Number(items.reduce((sum, item) => sum + item.subtotal, 0).toFixed(2));
+    const deliveryFee = Number((dto.deliveryFee ?? 0).toFixed(2));
+    const total = Number((subtotal + deliveryFee).toFixed(2));
+
     return new Order(
       id,
       orderNumber,
@@ -21,6 +25,10 @@ export class OrderFactory {
       dto.customerId ?? null,
       dto.deliveryAddress ?? null,
       items,
+      subtotal,
+      deliveryFee,
+      total,
+      dto.driverId ?? null,
       'PENDING_KITCHEN',
       new Date()
     );

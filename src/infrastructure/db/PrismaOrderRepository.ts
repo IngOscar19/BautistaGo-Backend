@@ -50,10 +50,12 @@ export class PrismaOrderRepository implements IOrderRepository {
         orderNumber: order.orderNumber,
         orderType: order.orderType,
         customerId: order.customerId,
+        driverId: order.driverId,
         deliveryAddress: order.deliveryAddress,
         status: order.status,
-        subtotal: new Decimal(order.total()),
-        total: new Decimal(order.total()),
+        subtotal: new Decimal(order.subtotal),
+        deliveryFee: new Decimal(order.deliveryFee),
+        total: new Decimal(order.total),
         items: {
           create: order.items.map(i => ({
             productId: i.productId,
@@ -108,6 +110,10 @@ export class PrismaOrderRepository implements IOrderRepository {
       row.customerId,
       row.deliveryAddress,
       items,
+      Number(row.subtotal),
+      Number(row.deliveryFee),
+      Number(row.total),
+      row.driverId,
       row.status as OrderStatus,
       row.createdAt
     );

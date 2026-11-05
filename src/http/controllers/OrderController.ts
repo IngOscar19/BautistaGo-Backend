@@ -27,6 +27,7 @@ const CreateOrderItemSchema = z.object({
 const CreateOrderSchema = z.object({
   orderType: z.enum(['COUNTER', 'DINE_IN', 'DELIVERY']),
   deliveryAddress: z.string().optional().nullable(),
+  deliveryFee: z.number().nonnegative().optional(),
   items: z.array(CreateOrderItemSchema).min(1, 'El pedido debe contener al menos un producto'),
 });
 

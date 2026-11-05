@@ -12,8 +12,11 @@ const ProductSchema = z.object({
   price: z.number().positive(),
   pricingType: z.enum(['BY_WEIGHT_KG', 'BY_WEIGHT_G', 'BY_PIECE']),
 <<<<<<< HEAD
+<<<<<<< HEAD
   category: z.string().min(2).optional(),
 =======
+=======
+>>>>>>> feature/BE-02-domain-entities
   category: z.string().min(2),
 >>>>>>> feature/BE-01-project-scaffold
   imageUrl: z.string().url().optional(),

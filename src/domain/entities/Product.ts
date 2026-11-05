@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 export type PricingType = 'BY_WEIGHT_KG' | 'BY_WEIGHT_G' | 'BY_PIECE';
+=======
+import type { PricingType } from '../types/PricingType';
+
+export type { PricingType } from '../types/PricingType';
+>>>>>>> feature/BE-02-domain-entities
 
 export class Product {
   constructor(
