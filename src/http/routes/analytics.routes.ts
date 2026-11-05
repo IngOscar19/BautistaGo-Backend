@@ -5,9 +5,4 @@ import { authenticateJwt, requireRole } from '../middlewares/auth.middleware';
 export const analyticsRoutes = Router();
 
 // Acceso a métricas exclusivo para ADMIN
-analyticsRoutes.get(
-  '/dashboard',
-  authenticateJwt,
-  requireRole('ADMIN'),
-  AnalyticsController.getMetrics
-);
+analyticsRoutes.get('/dashboard', authenticateJwt, requireRole('ADMIN'), AnalyticsController.getMetrics);

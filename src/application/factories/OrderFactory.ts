@@ -11,13 +11,7 @@ export class OrderFactory {
 
     const items = dto.items.map(item => {
       const subtotal = Number((item.quantity * item.unitPrice).toFixed(2));
-      return new OrderItem(
-        item.productId,
-        item.quantity,
-        item.unitPrice,
-        subtotal,
-        item.notes
-      );
+      return new OrderItem(item.productId, item.quantity, item.unitPrice, subtotal, item.notes);
     });
 
     return new Order(

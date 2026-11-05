@@ -10,5 +10,14 @@ productRoutes.get('/:id', ProductController.getById);
 
 // Operaciones protegidas para Administradores
 productRoutes.post('/', authenticateJwt, requireRole('ADMIN'), ProductController.create);
+<<<<<<< HEAD
 productRoutes.patch('/:id/availability', authenticateJwt, requireRole('ADMIN', 'KITCHEN_OPERATOR'), ProductController.toggleAvailability);
+=======
+productRoutes.patch(
+  '/:id/availability',
+  authenticateJwt,
+  requireRole('ADMIN', 'KITCHEN_OPERATOR'),
+  ProductController.toggleAvailability
+);
+>>>>>>> feature/BE-01-project-scaffold
 productRoutes.delete('/:id', authenticateJwt, requireRole('ADMIN'), ProductController.softDelete);

@@ -9,7 +9,7 @@ export class User {
     public role: UserRole,
     public phone?: string,
     public isActive: boolean = true,
-    public deletedAt: Date | null = null,
+    public deletedAt: Date | null = null
   ) {}
 
   deactivate(): void {

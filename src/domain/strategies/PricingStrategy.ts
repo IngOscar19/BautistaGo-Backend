@@ -1,5 +1,8 @@
 import type { PricingType } from '../entities/Product';
+<<<<<<< HEAD
 import { BadRequestError } from '../../shared/errors/AppError';
+=======
+>>>>>>> feature/BE-01-project-scaffold
 
 export interface IPricingStrategy {
   calculateSubtotal(quantity: number, unitPrice: number): number;
@@ -37,9 +40,16 @@ export class PricingStrategyContext {
   private strategy: IPricingStrategy;
 
   constructor(pricingType: PricingType) {
+<<<<<<< HEAD
     this.strategy = (pricingType === 'BY_WEIGHT_KG' || pricingType === 'BY_WEIGHT_G')
       ? new ByWeightPricingStrategy() 
       : new ByPiecePricingStrategy();
+=======
+    this.strategy =
+      pricingType === 'BY_WEIGHT_KG' || pricingType === 'BY_WEIGHT_G'
+        ? new ByWeightPricingStrategy()
+        : new ByPiecePricingStrategy();
+>>>>>>> feature/BE-01-project-scaffold
   }
 
   public setStrategy(strategy: IPricingStrategy): void {
