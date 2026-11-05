@@ -63,7 +63,7 @@ export class OrderFacade {
     if (!order) throw new NotFoundError(`Pedido ${orderId}`);
 
     order.advanceState();
-    await this.orderRepo.updateStatus(orderId, order.status);
+    await this.orderRepo.updateStatus(orderId, order.status, order.version);
 
     // Notificación en tiempo real a clientes conectados
     this.broadcaster.broadcastToRoom(`order_room_${orderId}`, 'order:status_changed', {
@@ -88,7 +88,7 @@ export class OrderFacade {
     if (!order) throw new NotFoundError(`Pedido ${orderId}`);
 
     order.cancel();
-    await this.orderRepo.updateStatus(orderId, order.status);
+    await this.orderRepo.updateStatus(orderId, order.status, order.version);
 
     this.broadcaster.broadcastToRoom(`order_room_${orderId}`, 'order:status_changed', {
       orderId,

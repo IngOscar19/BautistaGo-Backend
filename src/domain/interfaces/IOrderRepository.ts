@@ -23,6 +23,6 @@ export interface IOrderRepository {
   findByCustomerId(customerId: string, pagination: PaginationParams): Promise<PaginatedResult<Order>>;
   findAll(filters: OrderFilters, pagination: PaginationParams): Promise<PaginatedResult<Order>>;
   save(order: Order): Promise<Order>;
-  updateStatus(id: string, status: OrderStatus): Promise<void>;
+  updateStatus(id: string, status: OrderStatus, expectedVersion?: number): Promise<void>;
   assignDriver(orderId: string, driverId: string): Promise<void>;
 }

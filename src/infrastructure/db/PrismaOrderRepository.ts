@@ -1,7 +1,7 @@
 import { Decimal } from '@prisma/client/runtime/library';
 import type { IOrderRepository, OrderFilters, PaginationParams, PaginatedResult } from '../../domain/interfaces';
 import { Order, OrderItem, type OrderStatus, type OrderType } from '../../domain/entities/Order';
-import { NotFoundError } from '../../shared/errors/AppError';
+import { ConflictError, NotFoundError } from '../../shared/errors/AppError';
 import { prisma } from './prisma.client';
 
 export class PrismaOrderRepository implements IOrderRepository {
@@ -99,10 +99,21 @@ export class PrismaOrderRepository implements IOrderRepository {
     return this.toDomain(row);
   }
 
-  async updateStatus(id: string, status: OrderStatus): Promise<void> {
+  async updateStatus(id: string, status: OrderStatus, expectedVersion?: number): Promise<void> {
+    if (expectedVersion !== undefined) {
+      const result = await prisma.order.updateMany({
+        where: { id, version: expectedVersion },
+        data: { status, version: { increment: 1 } },
+      });
+      if (result.count === 0) {
+        throw new ConflictError('Conflicto: el pedido fue modificado por otra solicitud simultánea');
+      }
+      return;
+    }
+
     await prisma.order.update({
       where: { id },
-      data: { status },
+      data: { status, version: { increment: 1 } },
     });
   }
 
@@ -151,7 +162,8 @@ export class PrismaOrderRepository implements IOrderRepository {
       Number(row.total),
       row.driverId,
       row.status as OrderStatus,
-      row.createdAt
+      row.createdAt,
+      row.version ?? 0
     );
   }
 }

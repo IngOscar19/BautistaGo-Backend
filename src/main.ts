@@ -21,6 +21,11 @@ io.attach(httpServer);
 
 new TelemetryGateway(io);
 
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+  console.error('FATAL: JWT_SECRET no está configurado o es menor a 32 caracteres. Deteniendo servidor.');
+  process.exit(1);
+}
+
 const PORT = process.env.PORT ?? '3000';
 httpServer.listen(PORT, async () => {
   try {

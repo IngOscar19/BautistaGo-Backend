@@ -40,7 +40,7 @@ interface JwtPayload {
 
 function signAccessToken(payload: JwtPayload): string {
   const expiresIn = (process.env.JWT_EXPIRES_IN || '15m') as jwt.SignOptions['expiresIn'];
-  return jwt.sign(payload, process.env.JWT_SECRET || 'secret', { expiresIn });
+  return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn });
 }
 
 function sha256(value: string): string {
@@ -188,7 +188,7 @@ export const AuthController = {
           data: {
             userId: user.id,
             tokenHash: sha256(refreshToken),
-            expiresAt: new Date(Date.now() + msFromDuration(process.env.JWT_REFRESH_EXPIITS_IN || '7d')),
+            expiresAt: new Date(Date.now() + msFromDuration(process.env.JWT_REFRESH_EXPIRES_IN || '7d')),
           },
         });
 

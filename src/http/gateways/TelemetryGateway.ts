@@ -45,7 +45,7 @@ export class TelemetryGateway {
       }
 
       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!);
         (socket as any).user = decoded;
         next();
       } catch (error) {

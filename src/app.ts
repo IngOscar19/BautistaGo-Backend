@@ -10,11 +10,17 @@ import { userRoutes } from './http/routes/user.routes';
 import { analyticsRoutes } from './http/routes/analytics.routes';
 import { globalErrorHandler } from './http/middlewares/errorHandler';
 import { requestLogger } from './http/middlewares/requestLogger';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './infrastructure/swagger/swagger.config';
 
 export const app = express();
 
 // Seguridad HTTP
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 app.use(
   cors({
     origin: process.env.CORS_ORIGINS?.split(','),
@@ -48,6 +54,9 @@ app.use('/api/analytics', analyticsRoutes);
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// Documentación de API (Swagger UI)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Manejo centralizado de excepciones
 app.use(globalErrorHandler);

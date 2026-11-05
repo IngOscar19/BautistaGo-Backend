@@ -38,7 +38,8 @@ export class Order {
     public readonly total: number = 0,
     public readonly driverId: string | null = null,
     status: OrderStatus = 'PENDING_KITCHEN',
-    public readonly createdAt: Date = new Date()
+    public readonly createdAt: Date = new Date(),
+    public readonly version: number = 0
   ) {
     this._items = items;
     this._state = stateFromStatus(status);
@@ -82,6 +83,7 @@ export class Order {
       deliveryFee: this.deliveryFee,
       total: this.total,
       driverId: this.driverId,
+      version: this.version,
       createdAt: this.createdAt,
     };
   }

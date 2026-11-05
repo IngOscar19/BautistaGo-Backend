@@ -113,6 +113,7 @@ model Order {
   deliveryLng      Decimal?    @map("delivery_lng") @db.Decimal(9, 6)
   notes            String?
   estimatedReadyAt DateTime?   @map("estimated_ready_at") @db.Timestamptz()
+  version          Int         @default(0)
   createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt        DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 

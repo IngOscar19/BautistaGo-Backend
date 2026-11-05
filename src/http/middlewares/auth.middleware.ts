@@ -18,7 +18,7 @@ export const authenticateJwt = (req: AuthenticatedRequest, res: Response, next: 
 
   const token = authHeader.split(' ')[1];
   try {
-    const secret = process.env.JWT_SECRET || 'secret';
+    const secret = process.env.JWT_SECRET!;
     const decoded = jwt.verify(token, secret) as { id: string; email: string; role: UserRole };
     req.user = decoded;
     next();
