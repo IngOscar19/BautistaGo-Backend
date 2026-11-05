@@ -30,7 +30,7 @@ export class OrderItem {
   constructor(
     public readonly productId: string,
     public readonly quantity: number, // Kilos o piezas
-    public readonly unitPrice: number,
+    public readonly unitPriceSnapshot: number,
     public readonly subtotal: number,
     public readonly notes?: string,
 <<<<<<< HEAD
@@ -40,8 +40,8 @@ export class OrderItem {
 >>>>>>> feature/BE-01-project-scaffold
   ) {}
 
-  get unitPriceSnapshot(): number {
-    return this.unitPrice;
+  get unitPrice(): number {
+    return this.unitPriceSnapshot;
   }
 }
 
@@ -90,5 +90,30 @@ export class Order {
 =======
   advanceState(): void { this._state = this._state.next(this); }
   cancel(): void       { this._state = this._state.cancel(this); }
+<<<<<<< HEAD
 >>>>>>> feature/BE-02-domain-entities
+=======
+
+  toJSON() {
+    return {
+      id: this.id,
+      orderNumber: this.orderNumber,
+      orderType: this.orderType,
+      customerId: this.customerId,
+      deliveryAddress: this.deliveryAddress,
+      status: this.status,
+      items: this._items.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPriceSnapshot: item.unitPriceSnapshot,
+        subtotal: item.subtotal,
+        notes: item.notes,
+        pricingTypeSnapshot: item.pricingTypeSnapshot,
+      })),
+      subtotal: this.total(),
+      total: this.total(),
+      createdAt: this.createdAt,
+    };
+  }
+>>>>>>> feature/BE-07-order-module
 }

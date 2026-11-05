@@ -1,6 +1,7 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import type { IOrderRepository, PaginationParams, PaginatedResult } from '../../domain/interfaces';
+import type { IOrderRepository, OrderFilters, PaginationParams, PaginatedResult } from '../../domain/interfaces';
 import { Order, OrderItem, type OrderStatus, type OrderType } from '../../domain/entities/Order';
+import { NotFoundError } from '../../shared/errors/AppError';
 import { prisma } from './prisma.client';
 
 export class PrismaOrderRepository implements IOrderRepository {
@@ -42,6 +43,32 @@ export class PrismaOrderRepository implements IOrderRepository {
     };
   }
 
+  async findAll(filters: OrderFilters, pagination: PaginationParams): Promise<PaginatedResult<Order>> {
+    const where = {
+      ...(filters.status ? { status: filters.status } : {}),
+      ...(filters.driverId ? { driverId: filters.driverId } : {}),
+    };
+    const skip = (pagination.page - 1) * pagination.limit;
+
+    const [total, rows] = await prisma.$transaction([
+      prisma.order.count({ where }),
+      prisma.order.findMany({
+        where,
+        include: { items: true },
+        skip,
+        take: pagination.limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+
+    return {
+      data: rows.map(r => this.toDomain(r)),
+      total,
+      page: pagination.page,
+      totalPages: Math.ceil(total / pagination.limit),
+    };
+  }
+
   async save(order: Order): Promise<Order> {
     // Procesamiento transaccional ACID (RF2, RF 3.2.10)
     const row = await prisma.order.create({
@@ -61,7 +88,7 @@ export class PrismaOrderRepository implements IOrderRepository {
             productId: i.productId,
             quantity: new Decimal(i.quantity),
             pricingTypeSnapshot: i.pricingTypeSnapshot,
-            unitPriceSnapshot: new Decimal(i.unitPrice),
+            unitPriceSnapshot: new Decimal(i.unitPriceSnapshot),
             subtotal: new Decimal(i.subtotal),
             notes: i.notes,
           })),
@@ -79,16 +106,37 @@ export class PrismaOrderRepository implements IOrderRepository {
     });
   }
 
+  async assignDriver(orderId: string, driverId: string): Promise<void> {
+    const driver = await prisma.deliveryDriver.findUnique({
+      where: { userId: driverId },
+    });
+
+    if (!driver) {
+      throw new NotFoundError('Repartidor');
+    }
+
+    await prisma.$transaction([
+      prisma.order.update({
+        where: { id: orderId },
+        data: { driverId },
+      }),
+      prisma.deliveryDriver.update({
+        where: { userId: driverId },
+        data: { currentOrderId: orderId, isAvailable: false },
+      }),
+    ]);
+  }
+
   private toDomain(row: any): Order {
 <<<<<<< HEAD
     const items = row.items.map((i: any) =>
       new OrderItem(
         i.productId,
         Number(i.quantity),
-        Number(i.unitPriceSnapshot ?? i.unitPrice),
+        Number(i.unitPriceSnapshot),
         Number(i.subtotal),
         i.notes,
-        i.pricingTypeSnapshot ?? 'BY_PIECE'
+        i.pricingTypeSnapshot
       )
 =======
     const items = row.items.map(
