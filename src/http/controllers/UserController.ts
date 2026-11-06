@@ -11,6 +11,7 @@ const CreateEmployeeSchema = z.object({
   password: z.string().min(6),
   role: z.enum(['KITCHEN_OPERATOR', 'DELIVERY_DRIVER', 'ADMIN']),
   phone: z.string().optional(),
+  vehiclePlate: z.string().optional(),
 });
 
 export const UserController = {
@@ -34,6 +35,15 @@ export const UserController = {
         },
         select: { id: true, name: true, email: true, role: true, isActive: true },
       });
+
+      if (parsed.role === 'DELIVERY_DRIVER') {
+        await prisma.deliveryDriver.create({
+          data: {
+            userId: user.id,
+            vehiclePlate: parsed.vehiclePlate || null,
+          },
+        });
+      }
 
       res.status(201).json(user);
     } catch (err) {

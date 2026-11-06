@@ -48,6 +48,9 @@ userRoutes.use(authenticateJwt, requireRole('ADMIN'));
  *               phone:
  *                 type: string
  *                 example: "4159876543"
+ *               vehiclePlate:
+ *                 type: string
+ *                 example: "GTO-123-A"
  *     responses:
  *       201:
  *         description: Empleado registrado exitosamente
